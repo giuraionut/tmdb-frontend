@@ -1,0 +1,21 @@
+.home {
+    padding: 50px;
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+
+    .movies {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+        gap: 15px;
+    }
+
+    .buttons {
+        display: flex;
+        gap: 10px;
+    }
+
+    .title {
+        font-size: 25px;
+    }
+}

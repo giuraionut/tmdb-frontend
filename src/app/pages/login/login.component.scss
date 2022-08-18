@@ -1,18 +1,19 @@
-.login-form {
-    min-width: 150px;
-    max-width: 500px;
-    width: 100%;
-}
-
-.login-field {
-    width: 100%;
-}
-
 .login-wrapper {
     display: flex;
-}
+    height:100%;
+    .login-form {
+        min-width: 150px;
+        max-width: 500px;
+        width: 100%;
+    }
 
-.login {
-    margin: 0 auto;
-    margin-top: 200px;
+    .login-field {
+        width: 100%;
+    }
+
+    .login {
+        margin: 0 auto;
+        margin-top: 200px;
+    }
+
 }

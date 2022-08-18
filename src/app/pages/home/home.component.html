@@ -1,3 +1,13 @@
 <div class="home">
-   
+    <div class="buttons">
+        <button mat-raised-button (click)="sortAscending()">Ascending</button>
+        <button mat-raised-button (click)="sortDescending()">Descending</button>
+        <button mat-raised-button (click)="goToPage(5)">Go to page</button>
+    </div>
+    <div class="title">{{moviesType | titlecase}} movies</div>
+    <div class="movies">
+        <ng-container *ngFor="let movie of movies">
+            <app-movie [movie]="movie"></app-movie>
+        </ng-container>
+    </div>
 </div>
