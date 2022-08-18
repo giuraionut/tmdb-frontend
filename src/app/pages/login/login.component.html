@@ -1,0 +1,16 @@
+<div class="login-wrapper">
+    <div class="login">
+        <form class="login-form">
+            <mat-form-field class="login-field" appearance="outline">
+                <mat-label>Username</mat-label>
+                <input #username matInput placeholder="john123">
+            </mat-form-field>
+
+            <mat-form-field class="login-field" appearance="outline">
+                <mat-label>Password</mat-label>
+                <input #password type="password" matInput>
+            </mat-form-field>
+        </form>
+        <button mat-raised-button color="primary" (click)="onLoginClick(username.value,password.value)">Login</button>
+    </div>
+</div>
