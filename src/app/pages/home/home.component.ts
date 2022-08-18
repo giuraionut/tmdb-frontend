@@ -1,8 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { map } from 'rxjs';
-import { Movie } from 'src/app/models/movie';
-import { PopularMovies } from 'src/app/models/popularMovies';
-import { MovieService } from 'src/app/services/movie.service';
+import { BehaviorSubject } from 'rxjs';
+import { SharedService } from 'src/app/shared/sharedService';
 
 @Component({
   selector: 'app-home',
@@ -11,36 +9,21 @@ import { MovieService } from 'src/app/services/movie.service';
 })
 export class HomeComponent implements OnInit {
 
-  constructor(private movieService: MovieService) { }
-  movies: Movie[] = []
-  descending = (a: Movie, b: Movie) => b.vote_average - a.vote_average;
-  ascending = (a: Movie, b: Movie) => a.vote_average - b.vote_average;
-  page: number = 1;
-  moviesType: string = "favorite";
+
+
+  constructor(private sharedService: SharedService) { }
+
+  isLogged: boolean = false;
   ngOnInit(): void {
-    this.movieService.getPopular(this.page).pipe(
-      map((popularMovies: PopularMovies) => popularMovies.results),
-      map(movies => this.movies = movies)
-    ).subscribe()
+    this.sharedService.selectIsLogged$.subscribe(value => this.isLogged = value);
+    localStorage.getItem('session_id') ? this.sharedService.setIsLogged(true) : this.sharedService.setIsLogged(false);
   }
 
-  goToPage(page: number) {
-    switch (this.moviesType) {
-      case "popular":
-        this.movieService.getPopular(page).pipe(
-          map((popularMovies: PopularMovies) => popularMovies.results),
-          map(movies => this.movies.push(...movies))
-        ).subscribe()
-        break;
-      case "favorite":
-        break;
-    }
-
+  logout(): void {
+    localStorage.clear();
+    this.sharedService.setIsLogged(false)
   }
-  sortAscending() {
-    this.movies.sort(this.ascending);
-  }
-  sortDescending() {
-    this.movies.sort(this.descending);
+  setMoviesType(moviesType: string) {
+    this.sharedService.setMoviesType(moviesType);
   }
 }
