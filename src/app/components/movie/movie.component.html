@@ -8,5 +8,8 @@
         <mat-progress-spinner matTooltip='Average score: {{movie.vote_average}}/10' class='progress' [diameter]='30'
             [color]='spinnerColor' [mode]='spinnerMode' [value]='movie.vote_average*10'>
         </mat-progress-spinner>
+        <div class="favoriteButton" (click)="markAsFavorite()" matTooltip="Add as favorite">
+            <mat-icon [ngClass]="{'isFavorite': isFavorite}">stars</mat-icon>
+        </div>
     </div>
 </div>

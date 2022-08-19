@@ -1,4 +1,6 @@
 import { Injectable } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 @Injectable({
     providedIn: 'root'
@@ -12,7 +14,7 @@ export class SharedService {
     private isLogged$ = new BehaviorSubject<boolean>(false);
     selectIsLogged$ = this.isLogged$.asObservable();
 
-    constructor() { }
+    constructor(private router: Router, private snackBar: MatSnackBar) { }
 
     setIsLogged(value: boolean) {
         this.isLogged$.next(value);

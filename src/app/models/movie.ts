@@ -4,7 +4,7 @@ export interface Movie {
     genre_ids: [],
     id: number,
     original_language: string,
-    original_titel: string,
+    original_title: string,
     overview: string,
     popularity: number,
     poster_path: string,

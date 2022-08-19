@@ -6,7 +6,7 @@ import { API_KEY, API_URL_V3 } from '../shared/constants';
 @Injectable({
     providedIn: 'root'
 })
-export class UserService {
+export class AuthService {
     constructor(private http: HttpClient) { }
 
     public getRequestToken(): Observable<any> {
@@ -24,9 +24,6 @@ export class UserService {
         return this.http.post(`${API_URL_V3}/authentication/session/new?api_key=${API_KEY}`, data);
     }
 
-    public getUserDetails(sessionId: string): Observable<any> {
-        return this.http.get(`${API_URL_V3}/account?api_key=${API_KEY}&session_id=${sessionId}`);
 
-    }
 }
 

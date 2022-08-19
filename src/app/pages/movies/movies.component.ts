@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { map } from 'rxjs';
+import { ActivatedRoute } from '@angular/router';
+import { map, mergeMap, Observable } from 'rxjs';
 import { Movie } from 'src/app/models/movie';
 import { Movies } from 'src/app/models/movies';
+import { AccountService } from 'src/app/services/account.service';
 import { MovieService } from 'src/app/services/movie.service';
 import { SharedService } from 'src/app/shared/sharedService';
 
@@ -12,54 +14,57 @@ import { SharedService } from 'src/app/shared/sharedService';
 })
 export class MoviesComponent implements OnInit {
 
-  constructor(private movieService: MovieService, private sharedService: SharedService) { }
+  constructor(private movieService: MovieService,
+    private sharedService: SharedService,
+    private accountService: AccountService,
+    private activatedRoute: ActivatedRoute) { }
+
   movies: Movie[] = []
+  moviesSlice: Movie[] = []
   descending = (a: Movie, b: Movie) => b.vote_average - a.vote_average;
   ascending = (a: Movie, b: Movie) => a.vote_average - b.vote_average;
   page: number = 1;
-  moviesType: string = '';
-  ngOnInit(): void {
-    this.sharedService.selectedMoviesType$.subscribe(moviesType => {
-      this.moviesType = moviesType;
-      switch (moviesType) {
-        case "popular":
-          this.movieService.getPopular(1).pipe(
-            map((popularMovies: Movies) => popularMovies.results),
-            map(movies => this.movies = movies)
-          ).subscribe()
-          break;
-        case "favorites":
-          this.movieService.getFavorites(1).pipe(
-            map((favoriteMovies: Movies) => favoriteMovies.results),
-            map(movies => this.movies = movies)
-          ).subscribe();
-          break;
-      }
-    });
+
+  title: string = '';
+
+  selectService(moviesType: string): Observable<any> {
+    this.title = moviesType;
+    switch (moviesType) {
+      case "favorites":
+        return this.accountService.getFavorites(this.page);
+      default:
+        return this.movieService.getPopular(this.page);
+    }
   }
 
-  goToPage(page: number) {
-    switch (this.moviesType) {
-      case "popular":
-        this.movieService.getPopular(page).pipe(
-          map((popularMovies: Movies) => popularMovies.results),
-          map(movies => this.movies.push(...movies))
-        ).subscribe()
-        break;
-      case "favorites":
-        this.movieService.getFavorites(page).pipe(
-          map((favoriteMovies: Movies) => favoriteMovies.results),
-          map(movies => this.movies.push(...movies))
-        ).subscribe();
-        break;
-    }
+  ngOnInit(): void {
+    this.activatedRoute.url.pipe(
+      map(url => url.pop()!.path),
+      mergeMap(type => this.selectService(type)),
+      map((movies: Movies) => movies.results),
+      map(movies => movies.sort(this.ascending)),
+      map(movies => this.movies = movies),
+      map(movies => this.moviesSlice = movies.slice(0, 10))
+    ).subscribe();
+  }
+  onPageChange(event: any) {
+    let previousPageIndex = event.previousPageIndex;
+    let pageIndex = event.pageIndex;
+    let pageSize = event.pageSize;
+    let length = event.length;
+    this.moviesSlice = this.movies.slice(pageIndex * pageSize, pageIndex * pageSize + pageSize)
+    //check movies length, if its more than 20 fetch and append.
+  }
 
+  removeFromFavorite(id: number, event: boolean) {
+    if (event && this.title === 'favorites')
+      this.moviesSlice = this.moviesSlice.filter(movie => movie.id != id);
   }
   sortAscending() {
-    this.movies.sort(this.ascending);
+    this.moviesSlice.sort(this.ascending);
   }
   sortDescending() {
-    this.movies.sort(this.descending);
+    this.moviesSlice.sort(this.descending);
   }
 
 }

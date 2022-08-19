@@ -1,13 +1,18 @@
-<div class="movies-wrapper">
+<div class="movies-wrapper" *ngIf="movies.length>0">
     <div class="buttons">
         <button mat-raised-button (click)="sortAscending()">Ascending</button>
         <button mat-raised-button (click)="sortDescending()">Descending</button>
-        <button mat-raised-button (click)="goToPage(5)">Go to page</button>
     </div>
-    <div class="title">{{moviesType | titlecase}} movies</div>
+    <mat-paginator [pageIndex]="1" [length]="movies.length" [pageSize]="10" [pageSizeOptions]="[5, 10, 20]"
+        (page)="onPageChange($event)" aria-label="Select page">
+    </mat-paginator>
+    <div class="title">{{title| titlecase}} movies</div>
     <div class="movies">
-        <ng-container *ngFor="let movie of movies">
-            <app-movie [movie]="movie"></app-movie>
+        <ng-container *ngFor="let movie of moviesSlice">
+            <app-movie (deleteFavoriteEvent)="removeFromFavorite(movie.id, $event)" [movie]="movie"></app-movie>
         </ng-container>
     </div>
+</div>
+<div class="movies-wrapper" *ngIf="movies.length==0">
+    <p style="font-size:30px">No movies found.</p>
 </div>

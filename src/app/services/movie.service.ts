@@ -13,9 +13,4 @@ export class MovieService {
   public getPopular(page: number): Observable<Movies> {
     return this.http.get<Movies>(`${API_URL_V3}/movie/popular?api_key=${API_KEY}&language=en-US&page=${page}`)
   }
-  public getFavorites(page: number): Observable<any> {
-    let accountId = localStorage.getItem('account_id');
-    let sessionId = localStorage.getItem('session_id');
-    return this.http.get(`${API_URL_V3}/account/${accountId}/favorite/movies?api_key=${API_KEY}&session_id=${sessionId}&language=en-US&sort_by=created_at.asc&page=${page}`);
-  }
 }

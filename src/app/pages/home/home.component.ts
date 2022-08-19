@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { SharedService } from 'src/app/shared/sharedService';
 
 @Component({
@@ -9,9 +9,7 @@ import { SharedService } from 'src/app/shared/sharedService';
 })
 export class HomeComponent implements OnInit {
 
-
-
-  constructor(private sharedService: SharedService) { }
+  constructor(private sharedService: SharedService, private snackBar: MatSnackBar) { }
 
   isLogged: boolean = false;
   ngOnInit(): void {
@@ -22,6 +20,7 @@ export class HomeComponent implements OnInit {
   logout(): void {
     localStorage.clear();
     this.sharedService.setIsLogged(false)
+    this.snackBar.open("You logged out successfully", "Close", { duration: 10000 });
   }
   setMoviesType(moviesType: string) {
     this.sharedService.setMoviesType(moviesType);

@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { MatSnackBar } from '@angular/material/snack-bar';
 import { map, mergeMap } from 'rxjs';
 import { LoginRequest } from 'src/app/models/loginRequest';
 import { RequestToken } from 'src/app/models/requestToken';
 import { Session } from 'src/app/models/session';
 import { User } from 'src/app/models/user';
-import { UserService } from 'src/app/services/user.service';
+import { AccountService } from 'src/app/services/account.service';
+import { AuthService } from 'src/app/services/auth.service';
 import { SharedService } from 'src/app/shared/sharedService';
 
 @Component({
@@ -14,7 +16,10 @@ import { SharedService } from 'src/app/shared/sharedService';
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private userService: UserService, private sharedService: SharedService) { }
+  constructor(private authService: AuthService,
+    private accountService: AccountService,
+    private sharedService: SharedService,
+    private snackBar: MatSnackBar) { }
 
   ngOnInit(): void {
   }
@@ -26,25 +31,26 @@ export class LoginComponent implements OnInit {
       'request_token': ''
     }
     console.log(loginData);
-    this.userService.getRequestToken().pipe(
+    this.authService.getRequestToken().pipe(
       map((requestToken: RequestToken) => requestToken.request_token),
       mergeMap(requestToken => {
         loginData.request_token = requestToken;
-        return this.userService.validateTokenWithLogin(loginData);
+        return this.authService.validateTokenWithLogin(loginData);
       }),
       map((requestToken: RequestToken) => requestToken.request_token),
-      mergeMap(requestToken => this.userService.getSessionId(requestToken)),
+      mergeMap(requestToken => this.authService.getSessionId(requestToken)),
       map((session: Session) => {
         localStorage.setItem('session_id', session.session_id);
         return session.session_id
       }),
-      mergeMap(sessionId => this.userService.getUserDetails(sessionId)),
+      mergeMap(sessionId => this.accountService.getUserDetails(sessionId)),
       map((user: User) => {
         localStorage.setItem('user_id', `${user.id}`);
         localStorage.setItem('username', user.username);
         localStorage.setItem('name', user.name);
         localStorage.setItem('avatar_hash', user.avatar.gravatar.hash);
         this.sharedService.setIsLogged(true);
+        this.snackBar.open("You logged in successfully", "Close", { duration: 10000 });
         return user;
       })
     ).subscribe();
