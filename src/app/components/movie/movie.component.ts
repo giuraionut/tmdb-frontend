@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ThemePalette } from '@angular/material/core';
 import { ProgressSpinnerMode } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { EMPTY, map, mergeMap } from 'rxjs';
+import { delay, EMPTY, map, mergeMap } from 'rxjs';
 import { AccountStates } from 'src/app/models/accStates';
 import { Movie } from 'src/app/models/movie';
 import { AccountService } from 'src/app/services/account.service';
@@ -25,6 +25,7 @@ export class MovieComponent implements OnInit {
   isAuthenticated: boolean = false;
   ngOnInit(): void {
     this.sharedService.selectIsLogged$.pipe(
+      delay(1000),
       map(isAuth => this.isAuthenticated = isAuth),
       mergeMap(isAuth => isAuth ? this.accountService.checkFavorite(this.movie.id) : EMPTY),
       map((result: AccountStates) => result.favorite),

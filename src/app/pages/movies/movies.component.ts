@@ -1,6 +1,7 @@
+import { query } from '@angular/animations';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { EMPTY, map, mergeMap, Observable } from 'rxjs';
+import { EMPTY, map, merge, mergeMap, Observable } from 'rxjs';
 import { Movie } from 'src/app/models/movie';
 import { Movies } from 'src/app/models/movies';
 import { AccountService } from 'src/app/services/account.service';
@@ -15,31 +16,34 @@ import { SharedService } from 'src/app/shared/sharedService';
 export class MoviesComponent implements OnInit {
 
   constructor(private movieService: MovieService,
-    private sharedService: SharedService,
     private accountService: AccountService,
     private activatedRoute: ActivatedRoute) { }
 
   movies: Movie[] = []
   moviesSlice: Movie[] = []
+
+  page: number = 1;
+  title: string = '';
+
   descending = (a: Movie, b: Movie) => b.vote_average - a.vote_average;
   ascending = (a: Movie, b: Movie) => a.vote_average - b.vote_average;
-  page: number = 1;
-
-  title: string = '';
 
   selectService(moviesType: string): Observable<any> {
     this.title = moviesType;
     switch (moviesType) {
       case "favorites":
         return this.accountService.getFavorites(this.page);
-      default:
-        return this.movieService.getPopular(this.page);
+      default: {
+        return this.activatedRoute.queryParams.pipe(
+          map(params => params['title']),
+          mergeMap(title => title ? this.movieService.search(title) : this.movieService.getPopular(this.page))
+        );
+      }
     }
   }
-
   ngOnInit(): void {
     this.activatedRoute.url.pipe(
-      map(url => url.pop()!.path),
+      map(url => { console.log(url); return url.pop()!.path }),
       mergeMap(type => this.selectService(type)),
       map((movies: Movies) => movies.results),
       map(movies => movies.sort(this.ascending)),
@@ -47,15 +51,6 @@ export class MoviesComponent implements OnInit {
       map(movies => this.moviesSlice = movies.slice(0, 10))
     ).subscribe();
 
-    this.sharedService.selectSearchingString$
-      .pipe(
-        map(query => query),
-        mergeMap(query => query ? this.movieService.search(query) : EMPTY),
-        map((movies: Movies) => movies.results),
-        map(movies => { console.log(movies); return movies; }),
-        map(movies => this.movies = movies),
-        map(movies => this.moviesSlice = movies.slice(0, 10))
-      ).subscribe()
   }
   onPageChange(event: any) {
     let previousPageIndex = event.previousPageIndex;

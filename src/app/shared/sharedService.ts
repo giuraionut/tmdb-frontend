@@ -1,10 +1,10 @@
 import { Injectable } from '@angular/core';
+import { throwToolbarMixedModesError } from '@angular/material/toolbar';
 import { BehaviorSubject } from 'rxjs';
 @Injectable({
     providedIn: 'root'
 })
 export class SharedService {
-
 
     private isLogged$ = new BehaviorSubject<boolean>(false);
     selectIsLogged$ = this.isLogged$.asObservable();
@@ -13,6 +13,13 @@ export class SharedService {
     selectSearchingString$ = this.searchingString$.asObservable();
     constructor() { }
 
+
+    getSessionId() {
+        return localStorage.getItem('session_id');
+    }
+    getAccountId() {
+        return localStorage.getItem('account_id');
+    }
     setIsLogged(value: boolean) {
         this.isLogged$.next(value);
         if (!value) {
