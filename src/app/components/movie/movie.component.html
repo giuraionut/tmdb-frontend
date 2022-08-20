@@ -1,14 +1,13 @@
 <div class='movie'>
     <div matTooltip={{movie.title}}>{{movie.title.length>25 ? (movie.title | slice:0:25)+'...' :
         movie.title}}</div>
-    <img class='poster' src='https://image.tmdb.org/t/p/w185{{movie.poster_path}}' />
+    <img class='poster' [src]="getPoster(185)" />
     <div class='details'>
         <div>{{movie.release_date}}</div>
-        <!-- <div>{{movie.vote_average}}</div> -->
         <mat-progress-spinner matTooltip='Average score: {{movie.vote_average}}/10' class='progress' [diameter]='30'
             [color]='spinnerColor' [mode]='spinnerMode' [value]='movie.vote_average*10'>
         </mat-progress-spinner>
-        <div class="favoriteButton" (click)="markAsFavorite()" matTooltip="Add as favorite">
+        <div *ngIf="isAuthenticated" class="favoriteButton" (click)="markAsFavorite()" matTooltip="Add as favorite">
             <mat-icon [ngClass]="{'isFavorite': isFavorite}">stars</mat-icon>
         </div>
     </div>

@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { map, mergeMap } from 'rxjs';
+import { Router } from '@angular/router';
+import { EMPTY, map, mergeMap } from 'rxjs';
 import { LoginRequest } from 'src/app/models/loginRequest';
 import { RequestToken } from 'src/app/models/requestToken';
 import { Session } from 'src/app/models/session';
@@ -19,9 +20,11 @@ export class LoginComponent implements OnInit {
   constructor(private authService: AuthService,
     private accountService: AccountService,
     private sharedService: SharedService,
-    private snackBar: MatSnackBar) { }
+    private snackBar: MatSnackBar,
+    private router: Router) { }
 
   ngOnInit(): void {
+    this.sharedService.selectIsLogged$.subscribe(value => value ? this.router.navigate(['/home']) : EMPTY);
   }
 
   onLoginClick(username: string, password: string): void {
@@ -30,7 +33,6 @@ export class LoginComponent implements OnInit {
       'password': password,
       'request_token': ''
     }
-    console.log(loginData);
     this.authService.getRequestToken().pipe(
       map((requestToken: RequestToken) => requestToken.request_token),
       mergeMap(requestToken => {
@@ -50,6 +52,7 @@ export class LoginComponent implements OnInit {
         localStorage.setItem('name', user.name);
         localStorage.setItem('avatar_hash', user.avatar.gravatar.hash);
         this.sharedService.setIsLogged(true);
+        this.router.navigate(['/home'])
         this.snackBar.open("You logged in successfully", "Close", { duration: 10000 });
         return user;
       })

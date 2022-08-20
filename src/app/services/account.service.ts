@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { API_KEY, API_URL_V3 } from '../shared/constants';
 import { Movies } from '../models/movies';
-import { Router } from '@angular/router';
 import { Favorite } from '../models/favorite';
 @Injectable({
     providedIn: 'root'

@@ -22,6 +22,7 @@ import { MoviesComponent } from './pages/movies/movies.component';
 import { AuthInterceptor } from './interceptors/auth.interceptor';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatPaginatorModule } from '@angular/material/paginator';
+import { FormsModule } from '@angular/forms';
 @NgModule({
   declarations: [
     AppComponent,
@@ -46,7 +47,8 @@ import { MatPaginatorModule } from '@angular/material/paginator';
     MatTooltipModule,
     MatProgressSpinnerModule,
     MatSnackBarModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    FormsModule
   ],
   providers: [{ provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }],
   bootstrap: [AppComponent]

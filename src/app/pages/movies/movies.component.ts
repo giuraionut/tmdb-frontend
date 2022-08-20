@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { map, mergeMap, Observable } from 'rxjs';
+import { EMPTY, map, mergeMap, Observable } from 'rxjs';
 import { Movie } from 'src/app/models/movie';
 import { Movies } from 'src/app/models/movies';
 import { AccountService } from 'src/app/services/account.service';
@@ -46,6 +46,16 @@ export class MoviesComponent implements OnInit {
       map(movies => this.movies = movies),
       map(movies => this.moviesSlice = movies.slice(0, 10))
     ).subscribe();
+
+    this.sharedService.selectSearchingString$
+      .pipe(
+        map(query => query),
+        mergeMap(query => query ? this.movieService.search(query) : EMPTY),
+        map((movies: Movies) => movies.results),
+        map(movies => { console.log(movies); return movies; }),
+        map(movies => this.movies = movies),
+        map(movies => this.moviesSlice = movies.slice(0, 10))
+      ).subscribe()
   }
   onPageChange(event: any) {
     let previousPageIndex = event.previousPageIndex;

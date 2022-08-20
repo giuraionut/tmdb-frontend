@@ -1,28 +1,27 @@
 import { Injectable } from '@angular/core';
-import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 @Injectable({
     providedIn: 'root'
 })
 export class SharedService {
 
-    private moviesType$ = new BehaviorSubject<string>('popular');
-    selectedMoviesType$ = this.moviesType$.asObservable();
-
 
     private isLogged$ = new BehaviorSubject<boolean>(false);
     selectIsLogged$ = this.isLogged$.asObservable();
 
-    constructor(private router: Router, private snackBar: MatSnackBar) { }
+    private searchingString$ = new BehaviorSubject<string>('');
+    selectSearchingString$ = this.searchingString$.asObservable();
+    constructor() { }
 
     setIsLogged(value: boolean) {
         this.isLogged$.next(value);
+        if (!value) {
+            localStorage.clear();
+        }
     }
 
-    setMoviesType(moviesType: string) {
-        this.moviesType$.next(moviesType);
+    setSearchingString(query: string) {
+        if (query)
+            this.searchingString$.next(query);
     }
-
-
 }
