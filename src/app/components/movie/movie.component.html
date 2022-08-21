@@ -3,8 +3,8 @@
         movie.title}}</div>
     <img class='poster' [src]="getPoster(185)" />
     <div class='details'>
-        <div>{{movie.release_date}}</div>
-        <mat-progress-spinner matTooltip='Average score: {{movie.vote_average}}/10' class='progress' [diameter]='30'
+        <div>{{movie.release_date ? movie.release_date : 'Date unkown'}}</div>
+        <mat-progress-spinner *ngIf="movie.vote_average" matTooltip='Average score: {{movie.vote_average}}/10' class='progress' [diameter]='30'
             [color]='spinnerColor' [mode]='spinnerMode' [value]='movie.vote_average*10'>
         </mat-progress-spinner>
         <div *ngIf="isAuthenticated" class="favoriteButton" (click)="markAsFavorite()" matTooltip="Add as favorite">

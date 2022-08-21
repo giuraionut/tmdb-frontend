@@ -29,7 +29,8 @@ export class HomeComponent implements OnInit {
   }
 
   logout(): void {
-    this.sharedService.setIsLogged(false)
+    this.sharedService.setIsLogged(false);
+    this.router.navigate(['/home/movies']);
     this.snackBar.open("You logged out successfully", "Close", { duration: 10000 });
   }
 
