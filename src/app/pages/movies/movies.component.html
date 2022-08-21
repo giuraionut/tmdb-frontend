@@ -1,9 +1,9 @@
 <div class="movies-wrapper" *ngIf="movies.length>0">
     <div class="buttons">
-        <button mat-raised-button (click)="sortAscending()">Ascending</button>
-        <button mat-raised-button (click)="sortDescending()">Descending</button>
+        <button mat-raised-button (click)="sortAscending()">Vote ascending</button>
+        <button mat-raised-button (click)="sortDescending()">Vote descending</button>
     </div>
-    <mat-paginator [pageIndex]="1" [length]="movies.length" [pageSize]="10" [pageSizeOptions]="[5, 10, 20]"
+    <mat-paginator [pageIndex]="0" [length]="movies.length" [pageSize]="10" [pageSizeOptions]="[5, 10, 20]"
         (page)="onPageChange($event)" aria-label="Select page">
     </mat-paginator>
     <div class="title">{{title| titlecase}} movies</div>

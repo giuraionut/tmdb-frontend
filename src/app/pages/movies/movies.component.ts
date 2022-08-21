@@ -59,6 +59,18 @@ export class MoviesComponent implements OnInit {
     let length = event.length;
     this.moviesSlice = this.movies.slice(pageIndex * pageSize, pageIndex * pageSize + pageSize)
     //check movies length, if its more than 20 fetch and append.
+    console.log("movies", this.movies.length);
+    console.log("moviesslice", this.moviesSlice.length);
+    console.log(pageIndex);
+    let noOfMovies = this.moviesSlice.length * (pageIndex + 1);
+    console.log(noOfMovies)
+    if (noOfMovies >= 20) {
+      this.page++;
+      this.movieService.getPopular(this.page).pipe(
+        map((movies: Movies) => movies.results),
+        map(movies => this.movies.push(...movies))
+      ).subscribe();
+    }
   }
 
   removeFromFavorite(id: number, event: boolean) {
